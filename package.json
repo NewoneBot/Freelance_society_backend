@@ -21,6 +21,7 @@
     "sequelize": "^6.37.6"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
-  }
+    "nodemon": "^3.1.9"
+  },
+  "type": "module"
 }

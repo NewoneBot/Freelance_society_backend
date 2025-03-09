@@ -1,6 +1,5 @@
-import userResolvers from "./users"
-import rolesResolvers from "./roles"
-
+import userResolvers from "./users.js";
+import rolesResolvers from "./roles.js";
 
 export default {
   Query: {

@@ -1,7 +1,6 @@
-const { ApolloServer, gql } = require("apollo-server");
+import { ApolloServer } from "apollo-server";
 import typeDefs from "./api/typeDef.js";
 import cpanelResolver from "./api/graphql/resolver/cpanel/index.js";
-
 
 // Resolvers
 const resolvers = {
@@ -9,34 +8,23 @@ const resolvers = {
     ...cpanelResolver.Query,
   },
   Mutation: {
-    ...cpanelResolver.Query
-  }
-}
+    ...cpanelResolver.Mutation, // Fix: Mutation me bhi Mutation likhna hai Query nahi
+  },
+};
 
-
-//Graphql server configuration
-export const server = new ApolloServer({
-  url: `${process.env.SERVER_END_DOMAIN}:${process.env.SERVER_PORT}/graphql`,
+// GraphQL server configuration
+const server = new ApolloServer({
   typeDefs,
   resolvers,
   status400ForVariableCoercionErrors: true,
   context: ({ req }) => {
-    const { cache } = server;
-    return myContext(req, cache);
+    return {}; // Custom context function
   },
-  plugins: [],
   debug: true,
 });
 
 // Start the Server
-server.listen().then(({ url }) => {
-  console.log(`🚀 server ${url}`);
+const PORT = process.env.SERVER_PORT || 4000;
+server.listen(PORT).then(({ url }) => {
+  console.log(`🚀 Server ready at ${url}`);
 });
-
-// httpServer.listen({ port: process.env.SERVER_PORT }, () => {
-//   console.log(
-//     `🚀 Server ready at ${process.env.SERVER_END_DOMAIN}:${process.env.SERVER_PORT}`
-//   );
-// });
-
-
