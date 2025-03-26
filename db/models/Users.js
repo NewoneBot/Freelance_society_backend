@@ -26,6 +26,10 @@ const Users = sequelize.define(
         type: DataTypes.TEXT,
         allowNull: false,
       },
+      ult_parent_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
       role: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -95,7 +99,7 @@ const Users = sequelize.define(
         allowNull: true,
       },
       status: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(255),
         allowNull: true,
       },
       dob: {
@@ -115,6 +119,10 @@ const Users = sequelize.define(
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+      },
+      parent_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
     },
     {

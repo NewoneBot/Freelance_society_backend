@@ -7,15 +7,15 @@ export default gql`
     lastname: String
     email: String!
     password: String!
-    role: Int!
     date: String
     callback: String
     company_name: String
     no_of_calls: Int
+    role: Int!
     revert: String
-    country_code: Int
+    country_code: String
     number: String
-    alt_country_code: Int
+    alt_country_code: String
     alt_number: String
     avatar: String
     country: String
@@ -24,17 +24,18 @@ export default gql`
     zipcode: String
     address1: String
     address2: String
-    ult_parent: ID
-    status: Int
+    parent_id: String
+    ult_parent_id: String
+    status: String
     dob: String
     gender: String
     created_at: String
-    updated_at: String
-    token: String
+    updated_at: String  
+    token:String
   }
 
   input UserInput {
-    id: ID!
+    id: ID
     firstname: String!
     lastname: String
     email: String!
@@ -47,7 +48,7 @@ export default gql`
     revert: String
     country_code: String
     number: String
-    alt_country_code: Int
+    alt_country_code: String
     alt_number: String
     avatar: String
     country: String
@@ -56,36 +57,15 @@ export default gql`
     zipcode: String
     address1: String
     address2: String
-    ult_parent: ID
+    ult_parent_id: String
+    parent_id: String
     status: Int
     dob: String
     gender: String
     created_at: String
     updated_at: String
-    token: String!
+    token:String
   }
-
-    input ClientInput {
-  id: ID
-  firstname: String!
-  lastname: String
-  email: String!
-  country_code: String!
-  number: String!
-  password: String!
-  country: String
-  ult_parent: ID
-  state: String
-  city: String
-  zipcode: String
-  role: Int
-  gender: String
-  dob: String
-  company_name: String!
-  created_at: String
-  updated_at: String
-}
-
 
   type Role {
     id: ID!
@@ -101,8 +81,7 @@ export default gql`
   }
 
   type Mutation {
-    createUser(userInput: UserInput!): User
+    createUser(userInput: UserInput): User
     login(email: String!, password: String!): User!
-    insertClient(clientInput: ClientInput!): User
   }
 `;
