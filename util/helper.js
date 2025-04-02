@@ -10,6 +10,7 @@ export const generateToken = (user) => {
       firstname: user.firstname,
       email: user.email,
       number: user.number,
+      role: user.role,
       password: user.password, // Storing passwords in a token is NOT recommended
     },
     process.env.SECRET_KEY,

@@ -108,6 +108,7 @@ const resolvers = {
           firstname: user.firstname,
           email: user.email,
           password: user.password,
+          role: user.role,
           number: user.number,
           token,
         };
