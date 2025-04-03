@@ -117,66 +117,6 @@ const resolvers = {
         throw new Error(error.message || "Login failed.");
       }
     },
-    // insertClient: async (_, { clientInput }) => {
-    //   try {
-    //     const {  
-    //       id,firstname,lastname,email,country_code,number,password,country,state,city,zipcode,gender,dob,company_name,created_at,updated_at, 
-    //     } = clientInput;
-    
-    //     // Set default values
-    //     const role = clientInput.role ?? 4; // Default role = 4
-    
-    //     // Check if client already exists
-    //     const existingClient = await Users.findOne({ where: { email } });
-    //     if (existingClient) {
-    //       throw new Error("Client with this email already exists.");
-    //     }
-    
-    //     // Create new client
-    //     const newClient = await Users.create({
-    //       id,
-    //       firstname,
-    //       lastname,
-    //       email,
-    //       country_code,
-    //       number,
-    //       password,
-    //       country,
-    //       state,
-    //       city,
-    //       zipcode,
-    //       role, // Ensure role is set
-    //       gender,
-    //       dob,
-    //       company_name,
-    //       created_at: created_at ?? new Date().toISOString(), // Default created_at
-    //       updated_at: updated_at ?? new Date().toISOString(), // Default updated_at
-    //     });
-    
-    //     return {
-    //       id: newClient.id,
-    //       firstname: newClient.firstname,
-    //       lastname: newClient.lastname,
-    //       email: newClient.email,
-    //       country_code: newClient.country_code,
-    //       number: newClient.number,
-    //       password: newClient.password,
-    //       country: newClient.country,
-    //       state: newClient.state,
-    //       city: newClient.city,
-    //       zipcode: newClient.zipcode,
-    //       role: newClient.role, // Ensuring role is returned
-    //       gender: newClient.gender,
-    //       dob: newClient.dob,
-    //       company_name: newClient.company_name,
-    //       created_at: newClient.created_at,
-    //       updated_at: newClient.updated_at,
-    //     };
-    //   } catch (error) {
-    //     console.error("Error inserting client:", error);
-    //     throw new Error(error.message || "Failed to insert client.");
-    //   }
-    // },
     
   }
 
