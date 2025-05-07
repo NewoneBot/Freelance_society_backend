@@ -64,7 +64,6 @@ export default gql`
     gender: String
     created_at: String
     updated_at: String
-    token:String
   }
 
   type Role {
