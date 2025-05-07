@@ -26,7 +26,7 @@ export default gql`
     address2: String
     parent_id: String
     ult_parent_id: String
-    status: String
+    status: Int
     dob: String
     gender: String
     created_at: String
