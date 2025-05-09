@@ -24,7 +24,7 @@ const Users = sequelize.define(
       },
       password: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       ult_parent_id: {
         type: DataTypes.INTEGER,

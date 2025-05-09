@@ -6,7 +6,7 @@ export default gql`
     firstname: String!
     lastname: String
     email: String! 
-    password: String!
+    password: String
     date: String
     callback: String
     company_name: String
@@ -39,7 +39,6 @@ export default gql`
     firstname: String!
     lastname: String
     email: String!
-    password: String!
     role: Int!
     date: String
     callback: String
