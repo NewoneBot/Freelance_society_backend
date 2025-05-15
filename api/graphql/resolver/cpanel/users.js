@@ -8,7 +8,7 @@ const resolvers = {
   Query: {
     getUsers: async () => {
       try {
-        const users = await Users?.findAll({
+        const users = await Users.findAll({
           order: [['id', 'DESC']],
         });
         return users;
