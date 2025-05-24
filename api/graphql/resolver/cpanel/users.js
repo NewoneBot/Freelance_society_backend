@@ -160,7 +160,7 @@ const resolvers = {
       try {
         const [updated] = await Users.update(
           { status }, // Fields to update
-          { where: { id } } // Condition
+          { where: { id:id } } // Condition
         );
 
         if (updated === 0) {

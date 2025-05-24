@@ -81,6 +81,6 @@ export default gql`
   type Mutation {
     createUser(userInput: UserInput): User
     login(email: String!, password: String!): User!
-    updateUserStatus(id: ID!, status: String!): User
+    updateUserStatus(id: ID!, status: Int!): User
   }
 `;
