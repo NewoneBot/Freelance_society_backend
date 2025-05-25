@@ -22,7 +22,7 @@ const server = new ApolloServer({
   },
   debug: true,
 });
-
+  
 // Start the Server
 const PORT = process.env.SERVER_PORT || 4000;
 server.listen(PORT).then(({ url }) => {

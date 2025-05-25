@@ -1,53 +1,134 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const Role = require("./Role");
+import { DataTypes } from "sequelize";
+import sequelize from "../index.js";
 
-const User = sequelize.define("User", {
-    id: {
+const Users = sequelize.define(
+    "User",
+    {
+      id: {
         type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
-        autoIncrement: true
-    },
-    firstname: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    lastname: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    email: {
-        type: DataTypes.STRING,
+      },
+      firstname: {
+        type: DataTypes.STRING(225),
         allowNull: false,
-        unique: true
+      },
+      lastname: {
+        type: DataTypes.STRING(225),
+        allowNull: true,
+      },
+      email: {
+        type: DataTypes.STRING(225),
+        allowNull: false,
+        unique: true,
+      },
+      password: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      ult_parent_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      role: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      date: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      callback: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      company_name: {
+        type: DataTypes.STRING(225),
+        allowNull: true,
+      },
+      no_of_calls: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      revert: {
+        type: DataTypes.STRING(225),
+        allowNull: true,
+      },
+      country_code: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      number: {
+        type: DataTypes.BIGINT,
+        allowNull: true,
+      },
+      alt_country_code: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      alt_number: {
+        type: DataTypes.BIGINT,
+        allowNull: true,
+      },
+      avatar: {
+        type: DataTypes.STRING(225),
+        allowNull: true,
+      },
+      country: {
+        type: DataTypes.STRING(225),
+        allowNull: true,
+      },
+      state: {
+        type: DataTypes.STRING(225),
+        allowNull: true,
+      },
+      city: {
+        type: DataTypes.STRING(225),
+        allowNull: true,
+      },
+      zipcode: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      address1: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      address2: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      status: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      dob: {
+        type: DataTypes.DATEONLY,
+        allowNull: true,
+      },
+      gender: {
+        type: DataTypes.STRING(225),
+        allowNull: true,
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      parent_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
     },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    phone_number: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    country: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    state: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    city: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    gender: {
-        type: DataTypes.ENUM("Male", "Female"),
-        allowNull: false
+    {
+      tableName: "users",
+      timestamps: false, // Since we have created_at & updated_at manually
     }
-});
+  );
 
-// Define Relationship (One Role can have many Users)
-User.belongsTo(Role, { foreignKey: "roleId" });
-
-module.exports = User;
+export default Users;
