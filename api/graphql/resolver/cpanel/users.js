@@ -39,6 +39,7 @@ const resolvers = {
           address2,
           ult_parent_id,
           status,
+          client_upstatus,
           dob,
           no_of_calls,
           callback,
@@ -108,6 +109,7 @@ const resolvers = {
           ult_parent_id: ult_parent_id === "0" ? null : ult_parent_id,
           parent_id: parent_id === "0" ? null : parent_id,
           status,
+          client_upstatus,
           dob,
           callback,
           no_of_calls,
@@ -170,6 +172,28 @@ const resolvers = {
         // Fetch the updated user to return fields
         const updatedUser = await Users.findByPk(id, {
           attributes: ["id", "status"], // Only return needed fields
+        });
+
+        return updatedUser;
+      } catch (error) {
+        console.error("Error updating user status:", error);
+        throw new Error("Failed to update user status.");
+      }
+    },
+    updateUserupStatus: async (_, { id, client_upstatus }) => {
+      try {
+        const [updated] = await Users.update(
+          { client_upstatus }, // Fields to update
+          { where: { id:id } } // Condition
+        );
+
+        if (updated === 0) {
+          throw new UserInputError("User not found or status unchanged.");
+        }
+
+        // Fetch the updated user to return fields
+        const updatedUser = await Users.findByPk(id, {
+          attributes: ["id", "client_upstatus"], // Only return needed fields
         });
 
         return updatedUser;

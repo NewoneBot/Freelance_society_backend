@@ -5,7 +5,7 @@ export default gql`
     id: ID!
     firstname: String!
     lastname: String
-    email: String! 
+    email: String!
     password: String
     date: String
     callback: String
@@ -27,11 +27,12 @@ export default gql`
     parent_id: String
     ult_parent_id: String
     status: Int
+    client_upstatus: String
     dob: String
     gender: String
     created_at: String
-    updated_at: String  
-    token:String
+    updated_at: String
+    token: String
   }
 
   input UserInput {
@@ -59,6 +60,7 @@ export default gql`
     ult_parent_id: String
     parent_id: String
     status: Int
+    client_upstatus: String
     dob: String
     gender: String
     created_at: String
@@ -73,14 +75,22 @@ export default gql`
     updated_at: String
   }
 
+  type ClientUpStatus {
+    id: Int!
+    cl_status: String!
+    desc: String!
+  }
+
   type Query {
     getRole: [Role]
     getUsers: [User]
+    getClientUpStatuses: [ClientUpStatus]
   }
 
   type Mutation {
     createUser(userInput: UserInput): User
     login(email: String!, password: String!): User!
     updateUserStatus(id: ID!, status: Int!): User
+    updateUserupStatus(id: ID!, client_upstatus: String!): User
   }
 `;
