@@ -10,7 +10,7 @@ const Clientupstatus = sequelize.define(
       allowNull: false
     },
     cl_status: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     desc: {

@@ -103,7 +103,7 @@ const Users = sequelize.define(
       allowNull: true,
     },
     client_upstatus: {
-      type: DataTypes.STRING(225),
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     dob: {

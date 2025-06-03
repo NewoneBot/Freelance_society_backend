@@ -27,7 +27,7 @@ export default gql`
     parent_id: String
     ult_parent_id: String
     status: Int
-    client_upstatus: String
+    client_upstatus: Int
     dob: String
     gender: String
     created_at: String
@@ -60,7 +60,7 @@ export default gql`
     ult_parent_id: String
     parent_id: String
     status: Int
-    client_upstatus: String
+    client_upstatus: Int
     dob: String
     gender: String
     created_at: String
@@ -91,6 +91,6 @@ export default gql`
     createUser(userInput: UserInput): User
     login(email: String!, password: String!): User!
     updateUserStatus(id: ID!, status: Int!): User
-    updateUserupStatus(id: ID!, client_upstatus: String!): User
+    updateUserupStatus(id: ID!, client_upstatus: Int!): User
   }
 `;
