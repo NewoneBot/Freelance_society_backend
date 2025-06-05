@@ -162,7 +162,7 @@ const resolvers = {
       try {
         const [updated] = await Users.update(
           { status }, // Fields to update
-          { where: { id:id } } // Condition
+          { where: { id: id } } // Condition
         );
 
         if (updated === 0) {
@@ -184,7 +184,7 @@ const resolvers = {
       try {
         const [updated] = await Users.update(
           { client_upstatus }, // Fields to update
-          { where: { id:id } } // Condition
+          { where: { id: id } } // Condition
         );
 
         if (updated === 0) {
@@ -200,6 +200,100 @@ const resolvers = {
       } catch (error) {
         console.error("Error updating user status:", error);
         throw new Error("Failed to update user status.");
+      }
+    },
+    updateUser: async (_, { id, userInput }) => {
+      try {
+        const user = await Users.findByPk(id);
+        if (!user) {
+          throw new UserInputError("User not found.");
+        }
+
+        const {
+          firstname,
+          lastname,
+          email,
+          company_name,
+          country_code,
+          number,
+          alt_country_code,
+          alt_number,
+          country,
+          state,
+          city,
+          zipcode,
+          address1,
+          address2,
+          status,
+          client_upstatus,
+          dob,
+          callback,
+          no_of_calls,
+          gender,
+          created_at,
+          updated_at,
+        } = userInput;
+
+        const errors = {};
+
+        if (!firstname || firstname.trim() === "") {
+          errors.firstname = "First name is required.";
+        }
+        if (!email || email.trim() === "") {
+          errors.email = "Email is required.";
+        }
+        // You can add more validation if you want, e.g.:
+        // if (!number || number.toString().length < 7) { errors.number = "Valid phone number is required."; }
+        // if (!country || country.trim() === "") { errors.country = "Country is required."; }
+        // etc.
+
+        // Check if email is being changed to one that already exists
+        const existingUser = await Users.findOne({ where: { email } });
+        if (existingUser && existingUser.id !== id) {
+          errors.email = "Email is already in use by another account.";
+        }
+
+        if (Object.keys(errors).length > 0) {
+          const firstField = Object.keys(errors)[0];
+          throw new UserInputError(errors[firstField], { field: firstField });
+        }
+
+        await Users.update(
+          {
+            firstname,
+            lastname,
+            email,
+            company_name,
+            country_code,
+            number,
+            alt_country_code,
+            alt_number,
+            country,
+            state,
+            city,
+            zipcode,
+            address1,
+            address2,
+            status,
+            client_upstatus,
+            dob,
+            callback,
+            no_of_calls,
+            gender,
+            created_at,
+            updated_at,
+          },
+          { where: { id } }
+        );
+
+        const updatedUser = await Users.findByPk(id);
+        return updatedUser;
+      } catch (error) {
+        console.error("Error updating user:", error);
+        if (error instanceof UserInputError) {
+          throw error;
+        }
+        throw new Error(error.message || "Failed to update user.");
       }
     },
   },

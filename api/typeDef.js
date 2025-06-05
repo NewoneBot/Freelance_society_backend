@@ -67,6 +67,31 @@ export default gql`
     updated_at: String
   }
 
+  input UpdateUserInput {
+    firstname: String
+    lastname: String
+    email: String
+    company_name: String
+    country_code: String
+    number: String
+    alt_country_code: String
+    alt_number: String
+    country: String
+    state: String
+    city: String
+    zipcode: String
+    address1: String
+    address2: String
+    status: Int
+    client_upstatus: Int
+    dob: String
+    callback: String
+    no_of_calls: Int
+    gender: String
+    created_at: String
+    updated_at: String
+  }
+
   type Role {
     id: ID!
     role_name: String!
@@ -92,5 +117,6 @@ export default gql`
     login(email: String!, password: String!): User!
     updateUserStatus(id: ID!, status: Int!): User
     updateUserupStatus(id: ID!, client_upstatus: Int!): User
+    updateUser(id: Int!, userInput: UpdateUserInput!): User
   }
 `;
