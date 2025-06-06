@@ -110,6 +110,7 @@ export default gql`
     getRole: [Role]
     getUsers: [User]
     getClientUpStatuses: [ClientUpStatus]
+    getUserById(id: Int!): User
   }
 
   type Mutation {

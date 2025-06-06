@@ -17,6 +17,20 @@ const resolvers = {
         throw new Error("Failed to fetch users.");
       }
     },
+    getUserById: async (_parent, { id }) => {
+      try {
+        const user = await Users.findOne({ where: { id } });
+
+        if (!user) {
+          throw new Error("User not found.");
+        }
+
+        return user;
+      } catch (error) {
+        console.error(`Error fetching user with ID ${id}:`, error);
+        throw new Error("Failed to fetch user by ID.");
+      }
+    },
   },
   Mutation: {
     createUser: async (_, { userInput }) => {
