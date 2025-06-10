@@ -68,9 +68,11 @@ export default gql`
   }
 
   input UpdateUserInput {
+    id: ID
     firstname: String
     lastname: String
     email: String
+    role: Int
     company_name: String
     country_code: String
     number: String
