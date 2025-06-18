@@ -108,9 +108,14 @@ export default gql`
     desc: String!
   }
 
+  type PaginatedUsers {
+    users: [User]
+    totalCount: Int
+  }
+
   type Query {
     getRole: [Role]
-    getUsers: [User]
+    getUsers(limit: Int, offset: Int): PaginatedUsers
     getClientUpStatuses: [ClientUpStatus]
     getUserById(id: Int!): User
   }

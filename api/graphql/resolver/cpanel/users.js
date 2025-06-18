@@ -6,17 +6,26 @@ import { UserInputError } from "apollo-server";
 
 const resolvers = {
   Query: {
-    getUsers: async () => {
+    getUsers: async (_, { limit, offset }) => {
       try {
         const users = await Users.findAll({
           order: [["id", "DESC"]],
+          limit,
+          offset,
         });
-        return users;
+
+        const totalCount = await Users.count(); // total number of users in DB
+
+        return {
+          users,
+          totalCount,
+        };
       } catch (error) {
         console.error("Error fetching users:", error);
         throw new Error("Failed to fetch users.");
       }
     },
+
     getUserById: async (_parent, { id }) => {
       try {
         const user = await Users.findOne({ where: { id } });
@@ -33,7 +42,7 @@ const resolvers = {
     },
   },
   Mutation: {
-    createUser: async (_, { userInput }) => {
+    createUser: async (_, { userInput } , { user }) => {
       try {
         const {
           firstname,
