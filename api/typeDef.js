@@ -111,13 +111,26 @@ export default gql`
   type PaginatedUsers {
     users: [User]
     totalCount: Int
+    followUpCount: Int
   }
+
+  type ClientStatusCounts {
+  totalUsers: Int
+  followUp: Int
+  interested: Int
+  longFollowUp: Int
+  deleted: Int
+  closed: Int
+  todayInterested: Int
+  todayLongFollowUp: Int
+}
 
   type Query {
     getRole: [Role]
     getUsers(limit: Int, offset: Int): PaginatedUsers
     getClientUpStatuses: [ClientUpStatus]
     getUserById(id: Int!): User
+    getClientStatusCounts: ClientStatusCounts
   }
 
   type Mutation {

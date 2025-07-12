@@ -1,8 +1,28 @@
 import bcrypt from "bcrypt";
 import Users from "../../../../db/models/Users.js";
 import { generateToken } from "../../../../util/helper.js";
-
+import { Op, fn, col } from "sequelize";
 import { UserInputError } from "apollo-server";
+
+const now = new Date();
+
+// Start of today (00:00:00)
+const todayStart = new Date(
+  now.getFullYear(),
+  now.getMonth(),
+  now.getDate()
+).getTime();
+
+// End of today (23:59:59.999)
+const todayEnd = new Date(
+  now.getFullYear(),
+  now.getMonth(),
+  now.getDate(),
+  23,
+  59,
+  59,
+  999
+).getTime();
 
 const resolvers = {
   Query: {
@@ -25,7 +45,6 @@ const resolvers = {
         throw new Error("Failed to fetch users.");
       }
     },
-
     getUserById: async (_parent, { id }) => {
       try {
         const user = await Users.findOne({ where: { id } });
@@ -40,9 +59,94 @@ const resolvers = {
         throw new Error("Failed to fetch user by ID.");
       }
     },
+    getClientStatusCounts: async () => {
+      try {
+        const totalUsers = await Users.count();
+
+        const rawCounts = await Users.findAll({
+          attributes: [
+            "client_upstatus",
+            [fn("COUNT", col("client_upstatus")), "count"],
+          ],
+          where: {
+            client_upstatus: {
+              [Op.in]: [1, 2, 4, 5, 6],
+            },
+          },
+          group: ["client_upstatus"],
+          raw: true,
+        });
+
+        // ✅ Native JS to get today's start and end
+        const now = new Date();
+        const todayStart = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        ).getTime();
+        const todayEnd = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          23,
+          59,
+          59,
+          999
+        ).getTime();
+
+        const todayInterestedCount = await Users.count({
+          where: {
+            client_upstatus: 2,
+            created_at: {
+              [Op.between]: [todayStart, todayEnd],
+            },
+          },
+        });
+
+        const todayLongFollowUpCount = await Users.count({
+          where: {
+            client_upstatus: 4,
+            created_at: {
+              [Op.between]: [todayStart, todayEnd],
+            },
+          },
+        });
+
+        const statusMap = {
+          1: "followUp",
+          2: "interested",
+          4: "longFollowUp",
+          5: "deleted",
+          6: "closed",
+        };
+
+        const counts = {
+          totalUsers,
+          followUp: 0,
+          interested: 0,
+          longFollowUp: 0,
+          deleted: 0,
+          closed: 0,
+          todayInterested: todayInterestedCount,
+          todayLongFollowUp: todayLongFollowUpCount,
+        };
+
+        rawCounts.forEach(({ client_upstatus, count }) => {
+          const key = statusMap[client_upstatus];
+          if (key) {
+            counts[key] = parseInt(count, 10);
+          }
+        });
+
+        return counts;
+      } catch (error) {
+        console.error("Error fetching client status counts:", error);
+        throw new Error("Failed to fetch status counts.");
+      }
+    },
   },
   Mutation: {
-    createUser: async (_, { userInput } , { user }) => {
+    createUser: async (_, { userInput }, { user }) => {
       try {
         const {
           firstname,
