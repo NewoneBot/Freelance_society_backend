@@ -153,6 +153,7 @@ const resolvers = {
           lastname,
           email,
           role,
+          password,
           company_name,
           country_code,
           number,
@@ -217,10 +218,17 @@ const resolvers = {
           throw new UserInputError(errors[firstField], { field: firstField });
         }
 
+        let hashedPassword = null;
+        if (password) {
+          const saltRounds = 10;
+          hashedPassword = await bcrypt.hash(password, saltRounds);
+        }
+
         const newUser = await Users.create({
           firstname,
           lastname,
           email,
+          password: hashedPassword,
           role,
           company_name,
           country_code,

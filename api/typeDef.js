@@ -40,6 +40,7 @@ export default gql`
     firstname: String!
     lastname: String
     email: String!
+    password: String
     role: Int!
     date: String
     callback: String
