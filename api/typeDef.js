@@ -116,19 +116,21 @@ export default gql`
   }
 
   type ClientStatusCounts {
-  totalUsers: Int
-  followUp: Int
-  interested: Int
-  longFollowUp: Int
-  deleted: Int
-  closed: Int
-  todayInterested: Int
-  todayLongFollowUp: Int
-}
+    totalUsers: Int
+    followUp: Int
+    interested: Int
+    longFollowUp: Int
+    deleted: Int
+    closed: Int
+    todayInterested: Int
+    todayLongFollowUp: Int
+  }
 
   type Query {
     getRole: [Role]
-    getUsers(limit: Int, offset: Int): PaginatedUsers
+    getMembers(limit: Int, offset: Int): PaginatedUsers
+    getClient(limit: Int, offset: Int): PaginatedUsers
+    getProfile(limit: Int, offset: Int): PaginatedUsers
     getClientUpStatuses: [ClientUpStatus]
     getUserById(id: Int!): User
     getClientStatusCounts: ClientStatusCounts

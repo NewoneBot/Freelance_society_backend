@@ -26,15 +26,26 @@ const todayEnd = new Date(
 
 const resolvers = {
   Query: {
-    getUsers: async (_, { limit, offset }) => {
+    getMembers: async (_, { limit, offset }) => {
       try {
         const users = await Users.findAll({
+          where: {
+            role: {
+              [Op.in]: [1, 2, 3],
+            },
+          },
           order: [["id", "DESC"]],
           limit,
           offset,
         });
 
-        const totalCount = await Users.count(); // total number of users in DB
+        const totalCount = await Users.count({
+          where: {
+            role: {
+              [Op.in]: [1, 2, 3],
+            },
+          },
+        });
 
         return {
           users,
@@ -43,6 +54,58 @@ const resolvers = {
       } catch (error) {
         console.error("Error fetching users:", error);
         throw new Error("Failed to fetch users.");
+      }
+    },
+    getClient: async (_, { limit, offset }) => {
+      try {
+        const users = await Users.findAll({
+          where: {
+            role: 4, // Only clients
+          },
+          order: [["id", "DESC"]],
+          limit,
+          offset,
+        });
+
+        const totalCount = await Users.count({
+          where: {
+            role: 4,
+          },
+        });
+
+        return {
+          users,
+          totalCount,
+        };
+      } catch (error) {
+        console.error("Error fetching client users:", error);
+        throw new Error("Failed to fetch clients.");
+      }
+    },
+    getProfile: async (_, { limit, offset }) => {
+      try {
+        const users = await Users.findAll({
+          where: {
+            role: 5, // Only role 5 users (profile)
+          },
+          order: [["id", "DESC"]],
+          limit,
+          offset,
+        });
+
+        const totalCount = await Users.count({
+          where: {
+            role: 5,
+          },
+        });
+
+        return {
+          users,
+          totalCount,
+        };
+      } catch (error) {
+        console.error("Error fetching profile users:", error);
+        throw new Error("Failed to fetch profiles.");
       }
     },
     getUserById: async (_parent, { id }) => {
