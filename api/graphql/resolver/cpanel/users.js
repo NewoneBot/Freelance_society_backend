@@ -86,7 +86,9 @@ const resolvers = {
       try {
         const users = await Users.findAll({
           where: {
-            role: 5, // Only role 5 users (profile)
+            role: {
+              [Op.in]: [1, 2, 3, 5], // ✅ Include roles 1, 2, 3, and 5
+            },
           },
           order: [["id", "DESC"]],
           limit,
@@ -95,7 +97,9 @@ const resolvers = {
 
         const totalCount = await Users.count({
           where: {
-            role: 5,
+            role: {
+              [Op.in]: [1, 2, 3, 5], // ✅ Same filter for count
+            },
           },
         });
 
