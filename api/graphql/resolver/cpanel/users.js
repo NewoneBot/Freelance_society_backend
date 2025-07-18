@@ -251,9 +251,6 @@ const resolvers = {
         if (!email || email.trim() === "") {
           errors.email = "Email is required.";
         }
-        if (!company_name || company_name.trim() === "") {
-          errors.company_name = "Company name is required.";
-        }
 
         if (!number || number.toString().length < 7) {
           errors.number = "Valid phone number is required.";
