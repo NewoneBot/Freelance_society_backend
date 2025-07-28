@@ -8,6 +8,7 @@ export const generateToken = (user) => {
     {
       id: user.id,
       firstname: user.firstname,
+      lastname: user.lastname,
       email: user.email,
       number: user.number,
       role: user.role,

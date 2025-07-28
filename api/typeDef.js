@@ -134,6 +134,7 @@ export default gql`
     getClientUpStatuses: [ClientUpStatus]
     getUserById(id: Int!): User
     getClientStatusCounts: ClientStatusCounts
+    getStudents: [User]
   }
 
   type Mutation {
