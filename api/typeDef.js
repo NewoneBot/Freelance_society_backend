@@ -33,6 +33,12 @@ export default gql`
     created_at: String
     updated_at: String
     token: String
+    socialLinks: [SocialLink]
+  }
+
+    type SocialLink {
+    platform: String!
+    url: String!
   }
 
   input UserInput {
@@ -135,6 +141,7 @@ export default gql`
     getUserById(id: Int!): User
     getClientStatusCounts: ClientStatusCounts
     getStudents: [User]
+    getUserWithSocialLinks(userId: Int!): User
   }
 
   type Mutation {
@@ -144,4 +151,6 @@ export default gql`
     updateUserupStatus(id: ID!, client_upstatus: Int!): User
     updateUser(id: Int!, userInput: UpdateUserInput!): User
   }
+
+
 `;

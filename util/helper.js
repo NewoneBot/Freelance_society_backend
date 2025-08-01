@@ -11,10 +11,9 @@ export const generateToken = (user) => {
       lastname: user.lastname,
       email: user.email,
       number: user.number,
-      role: user.role,
-      password: user.password, // Storing passwords in a token is NOT recommended
+      socialLinks: user.socialLinks || [], // ✅ include if available
     },
     process.env.SECRET_KEY,
-    { expiresIn: "1h" } // Token expires in 1 hour
+    { expiresIn: "1h" }
   );
 };
