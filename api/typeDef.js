@@ -36,9 +36,19 @@ export default gql`
     socialLinks: [SocialLink]
   }
 
-    type SocialLink {
-    platform: String!
-    url: String!
+  type SocialLink {
+    platform: String
+    url: String
+  }
+
+  type StudentsProfileResponse {
+    users: [User]
+    totalCount: Int
+  }
+
+  type AllStudentsResponse {
+    users: [User]
+    totalCount: Int
   }
 
   input UserInput {
@@ -132,16 +142,27 @@ export default gql`
     todayLongFollowUp: Int
   }
 
+  type StudentLoginResponse {
+    id: ID!
+    firstname: String!
+    lastname: String
+    email: String!
+    number: String
+    role: Int!
+    studentToken: String!
+  }
+
   type Query {
     getRole: [Role]
     getMembers(limit: Int, offset: Int): PaginatedUsers
     getClient(limit: Int, offset: Int): PaginatedUsers
-    getProfile(limit: Int, offset: Int): PaginatedUsers
+    getProfileList(limit: Int, offset: Int): PaginatedUsers
     getClientUpStatuses: [ClientUpStatus]
     getUserById(id: Int!): User
     getClientStatusCounts: ClientStatusCounts
-    getStudents: [User]
+    getAllStudents: AllStudentsResponse
     getUserWithSocialLinks(userId: Int!): User
+    getStudentsProfile(id: [Int], limit: Int, offset: Int): PaginatedUsers
   }
 
   type Mutation {
@@ -150,7 +171,6 @@ export default gql`
     updateUserStatus(id: ID!, status: Int!): User
     updateUserupStatus(id: ID!, client_upstatus: Int!): User
     updateUser(id: Int!, userInput: UpdateUserInput!): User
+    studentLogin(email: String!, password: String!): StudentLoginResponse
   }
-
-
 `;

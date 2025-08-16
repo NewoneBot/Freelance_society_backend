@@ -82,7 +82,7 @@ const resolvers = {
         throw new Error("Failed to fetch clients.");
       }
     },
-    getProfile: async (_, { limit, offset }) => {
+    getProfileList: async (_, { limit, offset }) => {
       try {
         const users = await Users.findAll({
           where: {

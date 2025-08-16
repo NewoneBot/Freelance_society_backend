@@ -1,9 +1,12 @@
 import { Op } from "sequelize";
 import { Users } from "../../../../db/models/index.js";
+import bcrypt from "bcrypt";
+import { generateToken } from "../../../../util/helper.js";
+
 
 const studentResolvers = {
   Query: {
-    getStudents: async (_, { limit, offset }) => {
+    getAllStudents: async () => {
       try {
         const users = await Users.findAll({
           where: {
@@ -12,8 +15,12 @@ const studentResolvers = {
             },
           },
           order: [["id", "DESC"]],
-          limit,
-          offset,
+          include: [
+            {
+              association: "socialLinks",
+              attributes: ["platform", "url"],
+            },
+          ],
         });
 
         const totalCount = await Users.count({
@@ -29,34 +36,80 @@ const studentResolvers = {
           totalCount,
         };
       } catch (error) {
-        console.error("Error fetching users:", error);
-        throw new Error("Failed to fetch users.");
+        console.error("Error fetching all students:", error);
+        throw new Error("Failed to fetch all students.");
       }
     },
-    getUserWithSocialLinks: async (_, { userId }) => {
+    getStudentsProfile: async (_, { id, limit, offset }) => {
       try {
-        const user = await Users.findOne({
-          where: { id: userId },
+        const users = await Users.findAll({
+          where: {
+            ...(id?.length && { id: { [Op.in]: id } }), // Optional filtering by IDs
+            role: {
+              [Op.in]: [1, 2, 3, 5],
+            },
+          },
+          order: [["id", "DESC"]],
+          limit,
+          offset,
           include: [
             {
-              association: "socialLinks", // Defined in Users.hasMany(...)
-              attributes: ["platform", "url"], // You still control what you want from SocialLinks
+              association: "socialLinks",
+              attributes: ["platform", "url"],
             },
           ],
         });
 
-        if (!user) {
-          throw new Error("User not found");
-        }
-
-        return user;
+        return { users };
       } catch (error) {
-        console.error("Error fetching user and social links:", error);
-        throw new Error("Failed to fetch user");
+        console.error("Error fetching users:", error);
+        throw new Error("Failed to fetch users.");
       }
     },
   },
-  Mutation: {},
+  Mutation: {
+    studentLogin: async (_, { email, password }) => {
+      try {
+        // 1. Find student by email
+        const student = await Users.findOne({
+          where: { email, role: 5 }, // assuming role 5 = student
+          include: [
+            {
+              association: "socialLinks",
+              attributes: ["platform", "url"],
+            },
+          ],
+        });
+
+        if (!student) {
+          throw new Error("Student not found.");
+        }
+
+        // 2. Verify password
+        const isMatch = await bcrypt.compare(password, student.password);
+        if (!isMatch) {
+          throw new Error("Incorrect password.");
+        }
+
+        // 3. Generate student token
+        const studentToken = generateToken(student, "student");
+
+        // 4. Return response
+        return {
+          id: student.id,
+          firstname: student.firstname,
+          lastname: student.lastname,
+          email: student.email,
+          number: student.number,
+          role: student.role,
+          studentToken,
+        };
+      } catch (error) {
+        console.error("Student login error:", error);
+        throw new Error(error.message || "Student login failed.");
+      }
+    },
+  },
 };
 
 export default studentResolvers;
