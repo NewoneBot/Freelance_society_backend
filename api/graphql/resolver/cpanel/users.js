@@ -240,6 +240,12 @@ const resolvers = {
           callback,
           gender,
           parent_id,
+          // New fields
+          title,
+          description,
+          experience,
+          T_Projects,
+          S_Client_satisfaction,
         } = userInput;
 
         const errors = {};
@@ -313,6 +319,12 @@ const resolvers = {
           callback,
           no_of_calls,
           gender,
+          // New fields
+          title,
+          description,
+          experience,
+          T_Projects,
+          S_Client_satisfaction,
         });
 
         return {
@@ -431,6 +443,12 @@ const resolvers = {
           gender,
           created_at,
           updated_at,
+          // New fields
+          title,
+          description,
+          experience,
+          T_Projects,
+          S_Client_satisfaction,
         } = userInput;
 
         const errors = {};
@@ -441,10 +459,6 @@ const resolvers = {
         if (!email || email.trim() === "") {
           errors.email = "Email is required.";
         }
-        // You can add more validation if you want, e.g.:
-        // if (!number || number.toString().length < 7) { errors.number = "Valid phone number is required."; }
-        // if (!country || country.trim() === "") { errors.country = "Country is required."; }
-        // etc.
 
         // Check if email is being changed to one that already exists
         const existingUser = await Users.findOne({ where: { email } });
@@ -481,6 +495,12 @@ const resolvers = {
             gender,
             created_at,
             updated_at,
+            // New fields
+            title,
+            description,
+            experience,
+            T_Projects,
+            S_Client_satisfaction,
           },
           { where: { id } }
         );

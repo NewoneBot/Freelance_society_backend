@@ -3,7 +3,6 @@ import { Users } from "../../../../db/models/index.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../../../util/helper.js";
 
-
 const studentResolvers = {
   Query: {
     getAllStudents: async () => {
@@ -107,6 +106,34 @@ const studentResolvers = {
       } catch (error) {
         console.error("Student login error:", error);
         throw new Error(error.message || "Student login failed.");
+      }
+    },
+    addSkill: async (_, { skill }, { token }) => {
+      try {
+        if (!token) throw new Error("Unauthorized");
+
+        // Decode token to get user ID
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id;
+
+        // Verify user exists
+        const user = await Users.findByPk(userId);
+        if (!user) throw new Error("User not found");
+
+        // Save skill in DB
+        const newSkill = await Skills.create({
+          user_id: userId,
+          skill: skill,
+        });
+
+        return {
+          success: true,
+          message: "Skill added successfully",
+          skill: newSkill,
+        };
+      } catch (err) {
+        console.error(err);
+        throw new Error(err.message || "Something went wrong");
       }
     },
   },

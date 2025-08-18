@@ -10,11 +10,16 @@ export const generateToken = (user, type = "user") => {
     email: user.email,
     number: user.number,
     socialLinks: user.socialLinks || [],
+    title: user.title,                
+    description: user.description,    
+    experience: user.experience,      
+    T_Projects: user.T_Projects,      
+    S_Client_satisfaction: user.S_Client_satisfaction,
   };
 
   const secret =
     type === "student"
-      ? process.env.STUDENT_SECRET_KEY // 🔐 define this in .env
+      ? process.env.STUDENT_SECRET_KEY
       : process.env.SECRET_KEY;
 
   return jwt.sign(payload, secret, { expiresIn: "1h" });

@@ -34,6 +34,13 @@ export default gql`
     updated_at: String
     token: String
     socialLinks: [SocialLink]
+
+    # New fields
+    title: String
+    description: String
+    experience: Int
+    T_Projects: Int
+    S_Client_satisfaction: Int
   }
 
   type SocialLink {
@@ -82,6 +89,13 @@ export default gql`
     gender: String
     created_at: String
     updated_at: String
+
+    # New fields
+    title: String
+    description: String
+    experience: Int
+    T_Projects: Int
+    S_Client_satisfaction: Int
   }
 
   input UpdateUserInput {
@@ -109,6 +123,13 @@ export default gql`
     gender: String
     created_at: String
     updated_at: String
+
+    # New fields
+    title: String
+    description: String
+    experience: Int
+    T_Projects: Int
+    S_Client_satisfaction: Int
   }
 
   type Role {
@@ -129,6 +150,18 @@ export default gql`
     users: [User]
     totalCount: Int
     followUpCount: Int
+  }
+
+  type AddSkillResponse {
+    success: Boolean!
+    message: String!
+    skill: Skill
+  }
+
+  type Skill {
+    id: ID!
+    user_id: ID!
+    skill: String!
   }
 
   type ClientStatusCounts {
@@ -172,5 +205,6 @@ export default gql`
     updateUserupStatus(id: ID!, client_upstatus: Int!): User
     updateUser(id: Int!, userInput: UpdateUserInput!): User
     studentLogin(email: String!, password: String!): StudentLoginResponse
+    addSkill(skill: String!): AddSkillResponse!
   }
 `;

@@ -114,6 +114,27 @@ const Users = sequelize.define(
       type: DataTypes.STRING(225),
       allowNull: true,
     },
+    // New fields added below
+    title: {
+      type: DataTypes.STRING(225),
+      allowNull: true,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    experience: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    T_Projects: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    S_Client_satisfaction: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
