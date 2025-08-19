@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { Users } from "../../../../db/models/index.js";
+import { Skills, UserSkills, Users } from "../../../../db/models/index.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../../../util/helper.js";
 
@@ -65,6 +65,41 @@ const studentResolvers = {
         throw new Error("Failed to fetch users.");
       }
     },
+    getAllUserSkills: async () => {
+      try {
+        const userSkills = await UserSkills.findAll({
+          include: [
+            {
+              model: Skills,
+              as: "skill", // must match your association in Sequelize
+              attributes: ["id", "name"], // fetch only needed columns
+            },
+          ],
+        });
+        return userSkills;
+      } catch (err) {
+        console.error("Error fetching user skills:", err);
+        throw new Error("Unable to fetch user skills");
+      }
+    },
+    getUserSkills: async (_,) => {
+      try {
+        const userSkills = await UserSkills.findAll({
+          where: { user_id: "6" }, // filter by user ID
+          include: [
+            {
+              model: Skills,
+              as: "skill", // must match your association
+              attributes: ["id", "name"], // only fetch needed columns
+            },
+          ],
+        });
+        return userSkills;
+      } catch (err) {
+        console.error("Error fetching user skills:", err);
+        throw new Error("Unable to fetch user skills");
+      }
+    },
   },
   Mutation: {
     studentLogin: async (_, { email, password }) => {
@@ -108,33 +143,27 @@ const studentResolvers = {
         throw new Error(error.message || "Student login failed.");
       }
     },
-    addSkill: async (_, { skill }, { token }) => {
-      try {
-        if (!token) throw new Error("Unauthorized");
+    addUserSkills: async (_, { userId, skills }) => {
+      const user = await Users.findByPk(userId);
+      if (!user) throw new Error("User not found");
 
-        // Decode token to get user ID
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decoded.id;
+      // Create or find skills
+      const skillRecords = await Promise.all(
+        skills.map(async (name) => {
+          const [skill] = await Skills.findOrCreate({ where: { name } });
+          return skill;
+        })
+      );
 
-        // Verify user exists
-        const user = await Users.findByPk(userId);
-        if (!user) throw new Error("User not found");
+      // Add skills to user
+      await user.addSkills(skillRecords);
 
-        // Save skill in DB
-        const newSkill = await Skills.create({
-          user_id: userId,
-          skill: skill,
-        });
+      // Fetch updated user with skills
+      const userWithSkills = await Users.findByPk(userId, {
+        include: [{ model: Skills, as: "skills", through: { attributes: [] } }],
+      });
 
-        return {
-          success: true,
-          message: "Skill added successfully",
-          skill: newSkill,
-        };
-      } catch (err) {
-        console.error(err);
-        throw new Error(err.message || "Something went wrong");
-      }
+      return { user: userWithSkills };
     },
   },
 };

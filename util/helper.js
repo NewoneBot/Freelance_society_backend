@@ -1,6 +1,4 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-dotenv.config();
 
 export const generateToken = (user, type = "user") => {
   const payload = {
@@ -9,7 +7,6 @@ export const generateToken = (user, type = "user") => {
     lastname: user.lastname,
     email: user.email,
     number: user.number,
-    socialLinks: user.socialLinks || [],
     title: user.title,                
     description: user.description,    
     experience: user.experience,      

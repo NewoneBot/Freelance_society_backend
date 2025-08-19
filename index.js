@@ -1,6 +1,6 @@
 import { ApolloServer } from "apollo-server";
 import typeDefs from "./api/typeDef.js";
-import cpanelResolver from "./api/graphql/resolver/cpanel/index.js";
+import cpanelResolver from "./api/graphql/resolver/index.js";
 
 // Resolvers
 const resolvers = {

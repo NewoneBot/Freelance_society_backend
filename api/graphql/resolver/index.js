@@ -1,7 +1,7 @@
-import userResolvers from "./users.js";
-import rolesResolvers from "./roles.js";
-import ClientUpStatusresolvers from "./clientUpStatus.js";
-import studentResolvers from "../studentcpanel/studentsprofiles.js";
+import userResolvers from "./cpanel/users.js";
+import rolesResolvers from "./cpanel/roles.js";
+import ClientUpStatusresolvers from "./cpanel/clientUpStatus.js";
+import studentResolvers from "./studentcpanel/studentsprofiles.js";
 
 export default {
   Query: {

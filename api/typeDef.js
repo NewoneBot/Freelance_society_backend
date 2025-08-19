@@ -34,13 +34,12 @@ export default gql`
     updated_at: String
     token: String
     socialLinks: [SocialLink]
-
-    # New fields
     title: String
     description: String
     experience: Int
     T_Projects: Int
     S_Client_satisfaction: Int
+    skills: [Skill!]!
   }
 
   type SocialLink {
@@ -89,8 +88,6 @@ export default gql`
     gender: String
     created_at: String
     updated_at: String
-
-    # New fields
     title: String
     description: String
     experience: Int
@@ -123,8 +120,6 @@ export default gql`
     gender: String
     created_at: String
     updated_at: String
-
-    # New fields
     title: String
     description: String
     experience: Int
@@ -158,10 +153,26 @@ export default gql`
     skill: Skill
   }
 
+  type AddUserSkillsResponse {
+    user: User!
+  }
+
   type Skill {
+    id: Int!
+    name: String!
+  }
+
+  type UserSkill {
     id: ID!
     user_id: ID!
-    skill: String!
+    skill_id: ID!
+    skill: Skill
+  }
+
+  type AddSkillsResponse {
+    success: Boolean!
+    message: String!
+    user: User
   }
 
   type ClientStatusCounts {
@@ -196,6 +207,8 @@ export default gql`
     getAllStudents: AllStudentsResponse
     getUserWithSocialLinks(userId: Int!): User
     getStudentsProfile(id: [Int], limit: Int, offset: Int): PaginatedUsers
+    getAllUserSkills: [UserSkill]!
+    getUserSkills: [UserSkill]!
   }
 
   type Mutation {
@@ -205,6 +218,6 @@ export default gql`
     updateUserupStatus(id: ID!, client_upstatus: Int!): User
     updateUser(id: Int!, userInput: UpdateUserInput!): User
     studentLogin(email: String!, password: String!): StudentLoginResponse
-    addSkill(skill: String!): AddSkillResponse!
+    addUserSkills(userId: Int!, skills: [String!]!): AddUserSkillsResponse!
   }
 `;
