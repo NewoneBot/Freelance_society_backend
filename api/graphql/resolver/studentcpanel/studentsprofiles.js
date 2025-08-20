@@ -2,6 +2,7 @@ import { Op } from "sequelize";
 import { Skills, UserSkills, Users } from "../../../../db/models/index.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../../../util/helper.js";
+import Projects from "../../../../db/models/Projects.js";
 
 const studentResolvers = {
   Query: {
@@ -83,7 +84,7 @@ const studentResolvers = {
       }
     },
     getUserSkills: async (_, headers) => {
-      console.log(headers.authorization)
+      console.log(headers.authorization);
       try {
         const userSkills = await UserSkills.findAll({
           where: { user_id: "6" }, // filter by user ID
@@ -99,6 +100,18 @@ const studentResolvers = {
       } catch (err) {
         console.error("Error fetching user skills:", err);
         throw new Error("Unable to fetch user skills");
+      }
+    },
+    getProjectsByUser: async (_, headers) => {
+      try {
+        const projects = await Projects.findAll({
+          where: { user_id :"6" }, 
+          order: [["id", "DESC"]],
+        });
+        return projects;
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+        throw new Error("Unable to fetch projects");
       }
     },
   },
@@ -165,6 +178,21 @@ const studentResolvers = {
       });
 
       return { user: userWithSkills };
+    },
+    addProject: async (_, { input }) => {
+      try {
+        const project = await Projects.create({
+          user_id: input.user_id,
+          title: input.title,
+          description: input.description,
+          link: input.link,
+          technologies: input.technologies,
+        });
+        return project;
+      } catch (error) {
+        console.error("Error creating project:", error);
+        throw new Error("Unable to create project");
+      }
     },
   },
 };

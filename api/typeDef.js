@@ -127,6 +127,14 @@ export default gql`
     S_Client_satisfaction: Int
   }
 
+  input AddProjectInput {
+    user_id: Int!
+    title: String!
+    description: String
+    link: String
+    technologies: [String!]
+  }
+
   type Role {
     id: ID!
     role_name: String!
@@ -175,6 +183,17 @@ export default gql`
     user: User
   }
 
+  type Project {
+    id: ID!
+    user_id: Int!
+    title: String!
+    description: String
+    link: String
+    technologies: [String]
+    created_at: String
+    updated_at: String
+  }
+
   type ClientStatusCounts {
     totalUsers: Int
     followUp: Int
@@ -209,6 +228,8 @@ export default gql`
     getStudentsProfile(id: [Int], limit: Int, offset: Int): PaginatedUsers
     getAllUserSkills: [UserSkill]!
     getUserSkills: [UserSkill]!
+    getProjects: [Project]
+    getProjectsByUser: [Project]
   }
 
   type Mutation {
@@ -219,5 +240,6 @@ export default gql`
     updateUser(id: Int!, userInput: UpdateUserInput!): User
     studentLogin(email: String!, password: String!): StudentLoginResponse
     addUserSkills(userId: Int!, skills: [String!]!): AddUserSkillsResponse!
+    addProject(input: AddProjectInput!): Project
   }
 `;

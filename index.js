@@ -38,7 +38,7 @@ const server = new ApolloServer({
   const {cache} = server;
   return myContext(req, cache);
   },
-  debug: false,
+  debug: true,
 });
 
 
