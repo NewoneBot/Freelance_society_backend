@@ -22,12 +22,6 @@
 
 
   sequelizeObj.authenticate()
-  .then(()=>{
-    console.log("database connected");
-  })
-  .catch(()=>{
-    console.log("unable tpo connect")
-  }) 
 
   
 

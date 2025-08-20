@@ -82,7 +82,8 @@ const studentResolvers = {
         throw new Error("Unable to fetch user skills");
       }
     },
-    getUserSkills: async (_,) => {
+    getUserSkills: async (_, headers) => {
+      console.log(headers.authorization)
       try {
         const userSkills = await UserSkills.findAll({
           where: { user_id: "6" }, // filter by user ID
