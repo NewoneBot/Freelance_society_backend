@@ -44,7 +44,7 @@ const studentResolvers = {
       try {
         const users = await Users.findAll({
           where: {
-            ...(id?.length && { id: { [Op.in]: id } }), // Optional filtering by IDs
+            ...(id?.length && { id: { [Op.in]: id } }),
             role: {
               [Op.in]: [1, 2, 3, 5],
             },
@@ -105,13 +105,62 @@ const studentResolvers = {
     getProjectsByUser: async (_, headers) => {
       try {
         const projects = await Projects.findAll({
-          where: { user_id :"6" }, 
+          where: { user_id: "6" },
           order: [["id", "DESC"]],
         });
         return projects;
       } catch (error) {
         console.error("Error fetching projects:", error);
         throw new Error("Unable to fetch projects");
+      }
+    },
+    getPortfolioDetails: async (_, { userId }) => {
+      // take userId from arguments
+      try {
+        const user = await Users.findOne({
+          where: { id: userId },
+          attributes: [
+            "firstname",
+            "lastname",
+            "title",
+            "description",
+            "experience",
+            "T_Projects",
+            "S_Client_satisfaction",
+          ],
+        });
+
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        const userSkills = await UserSkills.findAll({
+          where: { user_id: userId },
+          include: [
+            {
+              model: Skills,
+              as: "skill",
+              attributes: ["id", "name"],
+            },
+          ],
+        });
+
+        const totalSkills = userSkills.length;
+
+        const projects = await Projects.findAll({
+          where: { user_id: userId },
+          order: [["id", "DESC"]],
+        });
+
+        return {
+          user,
+          skills: userSkills,
+          totalSkills,
+          projects,
+        };
+      } catch (err) {
+        console.error("Error fetching portfolio details:", err);
+        throw new Error("Unable to fetch portfolio details");
       }
     },
   },

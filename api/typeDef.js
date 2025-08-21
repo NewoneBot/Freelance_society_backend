@@ -39,7 +39,8 @@ export default gql`
     experience: Int
     T_Projects: Int
     S_Client_satisfaction: Int
-    skills: [Skill!]!
+    skills: [Skill!]
+    projects: [Project!]
   }
 
   type SocialLink {
@@ -194,6 +195,23 @@ export default gql`
     updated_at: String
   }
 
+  type UserBasicInfo {
+  firstname: String!
+  lastname: String
+  title: String
+  description: String
+  experience: Int
+  T_Projects: Int
+  S_Client_satisfaction: Int
+}
+
+type UserFullDetails {
+  user: UserBasicInfo!
+  skills: [UserSkill!]!
+  totalSkills: Int!
+  projects: [Project!]!
+}
+
   type ClientStatusCounts {
     totalUsers: Int
     followUp: Int
@@ -230,6 +248,7 @@ export default gql`
     getUserSkills: [UserSkill]!
     getProjects: [Project]
     getProjectsByUser: [Project]
+    getPortfolioDetails(userId: ID!): UserFullDetails!
   }
 
   type Mutation {
