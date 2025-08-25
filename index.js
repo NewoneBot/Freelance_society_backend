@@ -20,15 +20,7 @@ const myContext = (req, cache) => {
     headers: req.headers
   }
 }
-//  context: async ({ req }) => {
-//     console.log("hello1");
 
-//     const authHeader = req?.headers?.authorization || "";
-//     const token = authHeader.replace("Bearer ", ""); // <-- define token properly
-//     console.log("Authorization header:", authHeader);
-//     console.log("Token:", token);
-//     return { token }; // make both available in resolvers
-//   },
 
 
 const server = new ApolloServer({

@@ -11,7 +11,7 @@ export const generateToken = (user, type = "user") => {
     description: user.description,    
     experience: user.experience,      
     T_Projects: user.T_Projects,      
-    S_Client_satisfaction: user.S_Client_satisfaction,a
+    S_Client_satisfaction: user.S_Client_satisfaction,
   };
 
   const secret =

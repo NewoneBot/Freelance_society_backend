@@ -3,44 +3,14 @@ import { Skills, UserSkills, Users } from "../../../../db/models/index.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../../../util/helper.js";
 import Projects from "../../../../db/models/Projects.js";
+import checkauth from "../../../../util/checkauth.js";
 
 const studentResolvers = {
   Query: {
-    getAllStudents: async () => {
-      try {
-        const users = await Users.findAll({
-          where: {
-            role: {
-              [Op.in]: [1, 2, 3, 5],
-            },
-          },
-          order: [["id", "DESC"]],
-          include: [
-            {
-              association: "socialLinks",
-              attributes: ["platform", "url"],
-            },
-          ],
-        });
+    getStudentsProfile: async (_, { id, limit, offset }, { headers }) => {
+      const userData = await checkauth(headers.authorization);
+      console.log("Request made by user:", userData?.id);
 
-        const totalCount = await Users.count({
-          where: {
-            role: {
-              [Op.in]: [1, 2, 3, 5],
-            },
-          },
-        });
-
-        return {
-          users,
-          totalCount,
-        };
-      } catch (error) {
-        console.error("Error fetching all students:", error);
-        throw new Error("Failed to fetch all students.");
-      }
-    },
-    getStudentsProfile: async (_, { id, limit, offset }) => {
       try {
         const users = await Users.findAll({
           where: {
@@ -66,28 +36,12 @@ const studentResolvers = {
         throw new Error("Failed to fetch users.");
       }
     },
-    getAllUserSkills: async () => {
+    getUserSkills: async (_, __, { headers }) => {
+      const userData = await checkauth(headers.authorization);
+      console.log(userData?.id);
       try {
         const userSkills = await UserSkills.findAll({
-          include: [
-            {
-              model: Skills,
-              as: "skill", // must match your association in Sequelize
-              attributes: ["id", "name"], // fetch only needed columns
-            },
-          ],
-        });
-        return userSkills;
-      } catch (err) {
-        console.error("Error fetching user skills:", err);
-        throw new Error("Unable to fetch user skills");
-      }
-    },
-    getUserSkills: async (_, headers) => {
-      console.log(headers.authorization);
-      try {
-        const userSkills = await UserSkills.findAll({
-          where: { user_id: "6" }, // filter by user ID
+          where: { user_id: userData.id }, // filter by user ID
           include: [
             {
               model: Skills,
@@ -102,10 +56,11 @@ const studentResolvers = {
         throw new Error("Unable to fetch user skills");
       }
     },
-    getProjectsByUser: async (_, headers) => {
+    getProjectsByUser: async (_, __, { headers }) => {
+      const userData = await checkauth(headers.authorization);
       try {
         const projects = await Projects.findAll({
-          where: { user_id: "6" },
+          where: { user_id: userData.id },
           order: [["id", "DESC"]],
         });
         return projects;
@@ -114,8 +69,7 @@ const studentResolvers = {
         throw new Error("Unable to fetch projects");
       }
     },
-    getPortfolioDetails: async (_, { userId }) => {
-      // take userId from arguments
+    getPortfolioDetails: async (_, { userId }, { headers }) => {
       try {
         const user = await Users.findOne({
           where: { id: userId },
@@ -206,7 +160,11 @@ const studentResolvers = {
         throw new Error(error.message || "Student login failed.");
       }
     },
-    addUserSkills: async (_, { userId, skills }) => {
+    addUserSkills: async (_, { userId, skills }, { headers }) => {
+      // Authenticate user via header
+      const userData = await checkauth(headers.authorization);
+      console.log("Request made by user:", userData?.id);
+
       const user = await Users.findByPk(userId);
       if (!user) throw new Error("User not found");
 
@@ -228,7 +186,11 @@ const studentResolvers = {
 
       return { user: userWithSkills };
     },
-    addProject: async (_, { input }) => {
+    addProject: async (_, { input }, { headers }) => {
+      // Authenticate user via header
+      const userData = await checkauth(headers.authorization);
+      console.log("Request made by user:", userData?.id);
+
       try {
         const project = await Projects.create({
           user_id: input.user_id,
