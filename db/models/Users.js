@@ -2,6 +2,7 @@ import { DataTypes } from "sequelize";
 import sequelize from "../index.js";
 import Skills from "./Skills.js";
 import UserSkills from "./UserSkills.js";
+import Projects from "./Projects.js";
 
 const Users = sequelize.define(
   "User",
@@ -163,5 +164,7 @@ Users.belongsToMany(Skills, {
   foreignKey: "user_id",
   otherKey: "skill_id",
 });
+
+
 
 export default Users;

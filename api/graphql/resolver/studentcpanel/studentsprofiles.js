@@ -69,7 +69,61 @@ const studentResolvers = {
         throw new Error("Unable to fetch projects");
       }
     },
-    getPortfolioDetails: async (_, { userId }, { headers }) => {
+
+    getDashboardDetails: async (_, __, { headers }) => {
+      const userData = await checkauth(headers.authorization);
+      console.log("Decoded user data:", userData);
+      try {
+        const user = await Users.findOne({
+          where: { id: userData.id },
+          attributes: [
+            "firstname",
+            "lastname",
+            "email",
+            "country_code",
+            "number",
+            "title",
+            "description",
+            "experience",
+            "T_Projects",
+            "S_Client_satisfaction",
+          ],
+        });
+
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        const userSkills = await UserSkills.findAll({
+          where: { user_id: userData.id }, // fixed
+          include: [
+            {
+              model: Skills,
+              as: "skill",
+              attributes: ["id", "name"],
+            },
+          ],
+        });
+
+        const totalSkills = userSkills.length;
+
+        const projects = await Projects.findAll({
+          where: { user_id: userData.id }, // fixed
+          order: [["id", "DESC"]],
+        });
+
+        return {
+          user,
+          skills: userSkills,
+          totalSkills,
+          projects,
+        };
+      } catch (err) {
+        console.error("Error fetching portfolio details:", err);
+        throw new Error("Unable to fetch portfolio details");
+      }
+    },
+    getPortfolioDetails: async (_, { userId }) => {
       try {
         const user = await Users.findOne({
           where: { id: userId },
@@ -160,12 +214,12 @@ const studentResolvers = {
         throw new Error(error.message || "Student login failed.");
       }
     },
-    addUserSkills: async (_, { userId, skills }, { headers }) => {
+    addUserSkills: async (_, { skills }, { headers }) => {
       // Authenticate user via header
       const userData = await checkauth(headers.authorization);
       console.log("Request made by user:", userData?.id);
 
-      const user = await Users.findByPk(userId);
+      const user = await Users.findByPk(userData.id);
       if (!user) throw new Error("User not found");
 
       // Create or find skills
@@ -180,30 +234,74 @@ const studentResolvers = {
       await user.addSkills(skillRecords);
 
       // Fetch updated user with skills
-      const userWithSkills = await Users.findByPk(userId, {
+      const userWithSkills = await Users.findByPk(userData.id, {
         include: [{ model: Skills, as: "skills", through: { attributes: [] } }],
       });
 
       return { user: userWithSkills };
     },
-    addProject: async (_, { input }, { headers }) => {
+    deleteUserSkills: async (_, { skills }, { headers }) => {
+      // Authenticate user
+      const userData = await checkauth(headers.authorization);
+      console.log("Delete skills request by user:", userData?.id);
+
+      const user = await Users.findByPk(userData.id);
+      if (!user) throw new Error("User not found");
+
+      // Fetch skills to delete
+      const skillRecords = await Skills.findAll({
+        where: { name: skills },
+      });
+
+      if (skillRecords.length === 0) {
+        throw new Error("No matching skills found to delete");
+      }
+
+      // Remove skills association
+      await user.removeSkills(skillRecords);
+
+      // Fetch updated user with remaining skills
+      const userWithSkills = await Users.findByPk(userData.id, {
+        include: [{ model: Skills, as: "skills", through: { attributes: [] } }],
+      });
+
+      return { user: userWithSkills };
+    },
+    addUserProjects: async (_, { projects }, { headers }) => {
       // Authenticate user via header
       const userData = await checkauth(headers.authorization);
-      console.log("Request made by user:", userData?.id);
+      if (!userData) throw new Error("Unauthorized");
 
-      try {
-        const project = await Projects.create({
-          user_id: input.user_id,
-          title: input.title,
-          description: input.description,
-          link: input.link,
-          technologies: input.technologies,
-        });
-        return project;
-      } catch (error) {
-        console.error("Error creating project:", error);
-        throw new Error("Unable to create project");
-      }
+      const user = await Users.findByPk(userData.id);
+      if (!user) throw new Error("User not found");
+
+      // Create project records and associate with user
+      const projectRecords = await Promise.all(
+        projects.map(async ({ title, description, link, technologies }) => {
+          // Store technologies directly as JSON
+          const project = await Projects.create({
+            user_id: user.id,
+            title,
+            description,
+            link,
+            technologies: technologies || [],
+          });
+
+          return project;
+        })
+      );
+
+      // Fetch updated user with projects
+      const userWithProjects = await Users.findByPk(user.id, {
+        include: [
+          {
+            model: Projects,
+            as: "projects",
+          },
+        ],
+      });
+
+      return { user: userWithProjects };
     },
   },
 };

@@ -48,4 +48,6 @@ const Projects = sequelize.define(
   }
 );
 
+
+
 export default Projects;

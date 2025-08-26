@@ -128,13 +128,13 @@ export default gql`
     S_Client_satisfaction: Int
   }
 
-  input AddProjectInput {
-    user_id: Int!
-    title: String!
-    description: String
-    link: String
-    technologies: [String!]
-  }
+  input ProjectInput {
+  title: String!
+  description: String
+  link: String
+  technologies: [String!]
+}
+
 
   type Role {
     id: ID!
@@ -166,6 +166,10 @@ export default gql`
     user: User!
   }
 
+  type UserSkillsResponse {
+    user: User!
+  }
+
   type Skill {
     id: Int!
     name: String!
@@ -186,7 +190,7 @@ export default gql`
 
   type Project {
     id: ID!
-    user_id: Int!
+    user_id: Int
     title: String!
     description: String
     link: String
@@ -196,21 +200,28 @@ export default gql`
   }
 
   type UserBasicInfo {
-  firstname: String!
-  lastname: String
-  title: String
-  description: String
-  experience: Int
-  T_Projects: Int
-  S_Client_satisfaction: Int
-}
+    firstname: String!
+    lastname: String
+    email: String
+    country_code: String
+    number: String
+    title: String
+    description: String
+    experience: Int
+    T_Projects: Int
+    S_Client_satisfaction: Int
+  }
 
-type UserFullDetails {
-  user: UserBasicInfo!
-  skills: [UserSkill!]!
-  totalSkills: Int!
-  projects: [Project!]!
-}
+  type UserWithSkillsResponse {
+    user: User!
+  }
+
+  type UserFullDetails {
+    user: UserBasicInfo!
+    skills: [UserSkill!]!
+    totalSkills: Int!
+    projects: [Project!]!
+  }
 
   type ClientStatusCounts {
     totalUsers: Int
@@ -249,6 +260,7 @@ type UserFullDetails {
     getProjects: [Project]
     getProjectsByUser: [Project]
     getPortfolioDetails(userId: ID!): UserFullDetails!
+    getDashboardDetails: UserFullDetails!
   }
 
   type Mutation {
@@ -258,7 +270,8 @@ type UserFullDetails {
     updateUserupStatus(id: ID!, client_upstatus: Int!): User
     updateUser(id: Int!, userInput: UpdateUserInput!): User
     studentLogin(email: String!, password: String!): StudentLoginResponse
-    addUserSkills(userId: Int!, skills: [String!]!): AddUserSkillsResponse!
-    addProject(input: AddProjectInput!): Project
+    addUserSkills(skills: [String!]!): AddUserSkillsResponse!
+    deleteUserSkills(skills: [String!]!): UserSkillsResponse!
+    addUserProjects(projects: [ProjectInput!]!): User
   }
 `;
