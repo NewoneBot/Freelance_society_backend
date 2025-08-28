@@ -129,12 +129,11 @@ export default gql`
   }
 
   input ProjectInput {
-  title: String!
-  description: String
-  link: String
-  technologies: [String!]
-}
-
+    title: String!
+    description: String
+    link: String
+    technologies: [String!]
+  }
 
   type Role {
     id: ID!
@@ -186,6 +185,20 @@ export default gql`
     success: Boolean!
     message: String!
     user: User
+  }
+
+  type AddUserProjectsResponse {
+    user: User
+  }
+
+  type UserWithProjectsResponse {
+    user: User
+  }
+
+  input ProjectEditInput {
+    title: String
+    description: String
+    link: String
   }
 
   type Project {
@@ -272,6 +285,11 @@ export default gql`
     studentLogin(email: String!, password: String!): StudentLoginResponse
     addUserSkills(skills: [String!]!): AddUserSkillsResponse!
     deleteUserSkills(skills: [String!]!): UserSkillsResponse!
-    addUserProjects(projects: [ProjectInput!]!): User
+    addUserProjects(projects: [ProjectInput!]!): AddUserProjectsResponse
+    deleteUserProject(projectId: ID!): UserWithProjectsResponse
+    editUserProject(
+      projectId: ID!
+      input: ProjectEditInput!
+    ): UserWithProjectsResponse
   }
 `;

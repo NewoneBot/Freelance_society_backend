@@ -275,33 +275,80 @@ const studentResolvers = {
       const user = await Users.findByPk(userData.id);
       if (!user) throw new Error("User not found");
 
-      // Create project records and associate with user
+      // Create project records
       const projectRecords = await Promise.all(
         projects.map(async ({ title, description, link, technologies }) => {
-          // Store technologies directly as JSON
-          const project = await Projects.create({
+          return Projects.create({
             user_id: user.id,
             title,
             description,
             link,
             technologies: technologies || [],
           });
-
-          return project;
         })
       );
 
       // Fetch updated user with projects
       const userWithProjects = await Users.findByPk(user.id, {
-        include: [
-          {
-            model: Projects,
-            as: "projects",
-          },
-        ],
+        include: [{ model: Projects, as: "projects" }],
       });
 
       return { user: userWithProjects };
+    },
+    deleteUserProject: async (_, { projectId }, { headers }) => {
+      // 1. Authenticate user from headers
+      const userData = await checkauth(headers.authorization);
+      if (!userData) throw new Error("Unauthorized");
+
+      // 2. Ensure user exists
+      const user = await Users.findByPk(userData.id);
+      if (!user) throw new Error("User not found");
+
+      // 3. Find project to ensure it belongs to user
+      const project = await Projects.findOne({
+        where: { id: projectId, user_id: user.id },
+      });
+      if (!project) throw new Error("Project not found or not owned by user");
+
+      // 4. Delete the project
+      await project.destroy();
+
+      // 5. Fetch updated user with projects
+      const updatedUser = await Users.findByPk(user.id, {
+        include: [{ model: Projects, as: "projects" }],
+      });
+
+      return { user: updatedUser };
+    },
+    editUserProject: async (_, { projectId, input }, { headers }) => {
+      // 1. Authenticate user
+      const userData = await checkauth(headers.authorization);
+      if (!userData) throw new Error("Unauthorized");
+
+      // 2. Ensure user exists
+      const user = await Users.findByPk(userData.id);
+      if (!user) throw new Error("User not found");
+
+      // 3. Find project to ensure it belongs to user
+      const project = await Projects.findOne({
+        where: { id: projectId, user_id: user.id },
+      });
+      if (!project) throw new Error("Project not found or not owned by user");
+
+      // 4. Update project with provided input
+      await project.update({
+        title: input.title || project.title,
+        description: input.description || project.description,
+        link: input.link || project.link,
+        // add other fields as needed
+      });
+
+      // 5. Fetch updated user with projects
+      const updatedUser = await Users.findByPk(user.id, {
+        include: [{ model: Projects, as: "projects" }],
+      });
+
+      return { user: updatedUser };
     },
   },
 };
