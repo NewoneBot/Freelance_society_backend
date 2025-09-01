@@ -195,10 +195,15 @@ export default gql`
     user: User
   }
 
-  input ProjectEditInput {
+  type EditUserProjectPayload {
+    user: User!
+  }
+
+  input EditProjectInput {
     title: String
     description: String
     link: String
+    technologies: [String]
   }
 
   type Project {
@@ -289,7 +294,7 @@ export default gql`
     deleteUserProject(projectId: ID!): UserWithProjectsResponse
     editUserProject(
       projectId: ID!
-      input: ProjectEditInput!
-    ): UserWithProjectsResponse
+      input: EditProjectInput!
+    ): EditUserProjectPayload!
   }
 `;

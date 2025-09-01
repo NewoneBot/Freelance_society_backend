@@ -340,6 +340,8 @@ const studentResolvers = {
         title: input.title || project.title,
         description: input.description || project.description,
         link: input.link || project.link,
+        technologies: input.technologies || project.technologies,
+        
         // add other fields as needed
       });
 
