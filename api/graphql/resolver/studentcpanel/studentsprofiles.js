@@ -69,7 +69,6 @@ const studentResolvers = {
         throw new Error("Unable to fetch projects");
       }
     },
-
     getDashboardDetails: async (_, __, { headers }) => {
       const userData = await checkauth(headers.authorization);
       console.log("Decoded user data:", userData);
@@ -341,7 +340,7 @@ const studentResolvers = {
         description: input.description || project.description,
         link: input.link || project.link,
         technologies: input.technologies || project.technologies,
-        
+
         // add other fields as needed
       });
 
@@ -351,6 +350,38 @@ const studentResolvers = {
       });
 
       return { user: updatedUser };
+    },
+    editUserProfile: async (_, { input }, { headers }) => {
+      try {
+        // 1. Authenticate user
+        const userData = await checkauth(headers.authorization);
+        if (!userData) throw new Error("Unauthorized");
+
+        // 2. Find user
+        const user = await Users.findByPk(userData.id);
+        if (!user) throw new Error("User not found");
+
+        // 3. Update fields
+        await user.update({
+          firstname: input.firstname ?? user.firstname,
+          lastname: input.lastname ?? user.lastname,
+          email: input.email ?? user.email,
+          number: input.number ?? user.number,
+          title: input.title ?? user.title,
+          description: input.description ?? user.description,
+          experience: input.experience ?? user.experience,
+          T_Projects: input.T_Projects ?? user.T_Projects,
+          S_Client_satisfaction:
+            input.S_Client_satisfaction ?? user.S_Client_satisfaction,
+        });
+
+        // 4. Return updated user
+        const updatedUser = await Users.findByPk(user.id);
+
+        return { user: updatedUser };
+      } catch (err) {
+        throw new Error(err.message);
+      }
     },
   },
 };

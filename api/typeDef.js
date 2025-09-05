@@ -217,6 +217,22 @@ export default gql`
     updated_at: String
   }
 
+  input EditUserProfileInput {
+    firstname: String
+    lastname: String
+    email: String
+    number: String
+    title: String
+    description: String
+    experience: Int
+    T_Projects: Int
+    S_Client_satisfaction: Int
+  }
+
+  type EditUserProfilePayload {
+    user: User!
+  }
+
   type UserBasicInfo {
     firstname: String!
     lastname: String
@@ -296,5 +312,6 @@ export default gql`
       projectId: ID!
       input: EditProjectInput!
     ): EditUserProjectPayload!
+    editUserProfile(input: EditUserProfileInput!): EditUserProfilePayload!
   }
 `;
