@@ -76,6 +76,7 @@ const studentResolvers = {
         const user = await Users.findOne({
           where: { id: userData.id },
           attributes: [
+            "avatar",
             "firstname",
             "lastname",
             "email",
@@ -378,6 +379,28 @@ const studentResolvers = {
         // 4. Return updated user
         const updatedUser = await Users.findByPk(user.id);
 
+        return { user: updatedUser };
+      } catch (err) {
+        throw new Error(err.message);
+      }
+    },
+    updateUserAvatar: async (_, { avatar }, { headers }) => {
+      try {
+        // 1. Authenticate user
+        const userData = await checkauth(headers.authorization);
+        if (!userData) throw new Error("Unauthorized");
+
+        // 2. Find user
+        const user = await Users.findByPk(userData.id);
+        if (!user) throw new Error("User not found");
+
+        // 3. Update avatar
+        await user.update({
+          avatar: avatar ?? user.avatar,
+        });
+
+        // 4. Return updated user
+        const updatedUser = await Users.findByPk(user.id);
         return { user: updatedUser };
       } catch (err) {
         throw new Error(err.message);

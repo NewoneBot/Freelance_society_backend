@@ -348,6 +348,10 @@ const resolvers = {
 
         // Verify password
         const isMatch = await bcrypt.compare(password, user.password);
+        console.log("user-front",password);
+        console.log("user-back end",user.password);
+        
+
         if (!isMatch) {
           throw new Error("Incorrect password.");
         }

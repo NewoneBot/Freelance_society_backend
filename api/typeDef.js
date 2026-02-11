@@ -234,6 +234,7 @@ export default gql`
   }
 
   type UserBasicInfo {
+    avatar: String
     firstname: String!
     lastname: String
     email: String
@@ -248,6 +249,10 @@ export default gql`
 
   type UserWithSkillsResponse {
     user: User!
+  }
+
+  type UserResponse {
+    user: User
   }
 
   type UserFullDetails {
@@ -313,5 +318,6 @@ export default gql`
       input: EditProjectInput!
     ): EditUserProjectPayload!
     editUserProfile(input: EditUserProfileInput!): EditUserProfilePayload!
+    updateUserAvatar(avatar: String!): UserResponse
   }
 `;
