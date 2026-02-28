@@ -130,6 +130,8 @@ const studentResolvers = {
           attributes: [
             "firstname",
             "lastname",
+            "email",
+            "number",
             "title",
             "description",
             "experience",
@@ -227,7 +229,7 @@ const studentResolvers = {
         skills.map(async (name) => {
           const [skill] = await Skills.findOrCreate({ where: { name } });
           return skill;
-        })
+        }),
       );
 
       // Add skills to user
@@ -285,7 +287,7 @@ const studentResolvers = {
             link,
             technologies: technologies || [],
           });
-        })
+        }),
       );
 
       // Fetch updated user with projects
@@ -356,11 +358,11 @@ const studentResolvers = {
       try {
         // 1. Authenticate user
         const userData = await checkauth(headers.authorization);
-        if (!userData) throw new Error("Unauthorized");
+        // if (!userData) throw new Error("Unauthorized");
 
         // 2. Find user
         const user = await Users.findByPk(userData.id);
-        if (!user) throw new Error("User not found");
+        if (!user) throw new Error("User not found"); 
 
         // 3. Update fields
         await user.update({
@@ -371,9 +373,6 @@ const studentResolvers = {
           title: input.title ?? user.title,
           description: input.description ?? user.description,
           experience: input.experience ?? user.experience,
-          T_Projects: input.T_Projects ?? user.T_Projects,
-          S_Client_satisfaction:
-            input.S_Client_satisfaction ?? user.S_Client_satisfaction,
         });
 
         // 4. Return updated user

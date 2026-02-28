@@ -10,7 +10,7 @@ const now = new Date();
 const todayStart = new Date(
   now.getFullYear(),
   now.getMonth(),
-  now.getDate()
+  now.getDate(),
 ).getTime();
 
 // End of today (23:59:59.999)
@@ -21,7 +21,7 @@ const todayEnd = new Date(
   23,
   59,
   59,
-  999
+  999,
 ).getTime();
 
 const resolvers = {
@@ -149,7 +149,7 @@ const resolvers = {
         const todayStart = new Date(
           now.getFullYear(),
           now.getMonth(),
-          now.getDate()
+          now.getDate(),
         ).getTime();
         const todayEnd = new Date(
           now.getFullYear(),
@@ -158,7 +158,7 @@ const resolvers = {
           23,
           59,
           59,
-          999
+          999,
         ).getTime();
 
         const todayInterestedCount = await Users.count({
@@ -340,32 +340,32 @@ const resolvers = {
     },
     login: async (_, { email, password }) => {
       try {
-        // Check if user exists
         const user = await Users.findOne({ where: { email } });
+
         if (!user) {
           throw new Error("User not found.");
         }
 
-        // Verify password
         const isMatch = await bcrypt.compare(password, user.password);
-        console.log("user-front",password);
-        console.log("user-back end",user.password);
-        
 
         if (!isMatch) {
           throw new Error("Incorrect password.");
         }
 
-        // Generate JWT token
-        const token = generateToken(user);
+        let token;
+
+        // 🔥 THIS IS THE IMPORTANT PART
+        if (user.role === 5) {
+          token = generateToken(user, "student"); // student secret
+        } else {
+          token = generateToken(user); // default SECRET_KEY
+        }
 
         return {
           id: user.id,
           firstname: user.firstname,
           email: user.email,
-          password: user.password,
           role: user.role,
-          number: user.number,
           token,
         };
       } catch (error) {
@@ -377,7 +377,7 @@ const resolvers = {
       try {
         const [updated] = await Users.update(
           { status }, // Fields to update
-          { where: { id: id } } // Condition
+          { where: { id: id } }, // Condition
         );
 
         if (updated === 0) {
@@ -399,7 +399,7 @@ const resolvers = {
       try {
         const [updated] = await Users.update(
           { client_upstatus }, // Fields to update
-          { where: { id: id } } // Condition
+          { where: { id: id } }, // Condition
         );
 
         if (updated === 0) {
@@ -506,7 +506,7 @@ const resolvers = {
             T_Projects,
             S_Client_satisfaction,
           },
-          { where: { id } }
+          { where: { id } },
         );
 
         const updatedUser = await Users.findByPk(id);

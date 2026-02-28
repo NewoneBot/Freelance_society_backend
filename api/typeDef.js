@@ -283,6 +283,13 @@ export default gql`
     studentToken: String!
   }
 
+input UpdateProjectInput {
+  id: ID
+  title: String!
+  description: String
+  link: String
+}
+
   type Query {
     getRole: [Role]
     getMembers(limit: Int, offset: Int): PaginatedUsers
