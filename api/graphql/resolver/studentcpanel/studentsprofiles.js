@@ -356,13 +356,17 @@ const studentResolvers = {
     },
     editUserProfile: async (_, { input }, { headers }) => {
       try {
+        // Console headers
+        console.log("Headers:", headers);
+        console.log("Authorization Token:", headers.authorization);
+
         // 1. Authenticate user
         const userData = await checkauth(headers.authorization);
         // if (!userData) throw new Error("Unauthorized");
 
         // 2. Find user
         const user = await Users.findByPk(userData.id);
-        if (!user) throw new Error("User not found"); 
+        if (!user) throw new Error("User not found");
 
         // 3. Update fields
         await user.update({
