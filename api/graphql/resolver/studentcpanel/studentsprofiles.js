@@ -377,6 +377,7 @@ const studentResolvers = {
           title: input.title ?? user.title,
           description: input.description ?? user.description,
           experience: input.experience ?? user.experience,
+          avatar: input.avatar ?? user.avatar, // ✅ ADD THIS LINE
         });
 
         // 4. Return updated user
