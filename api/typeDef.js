@@ -227,6 +227,7 @@ export default gql`
     experience: Int
     T_Projects: Int
     S_Client_satisfaction: Int
+    avatar: String
   }
 
   type EditUserProfilePayload {

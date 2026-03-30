@@ -137,6 +137,7 @@ const studentResolvers = {
             "experience",
             "T_Projects",
             "S_Client_satisfaction",
+            "avatar",
           ],
         });
 
