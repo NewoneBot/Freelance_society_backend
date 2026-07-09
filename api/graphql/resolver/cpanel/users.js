@@ -519,6 +519,110 @@ const resolvers = {
         throw new Error(error.message || "Failed to update user.");
       }
     },
+    createClientUser: async (_, { userInput }, { user }) => {
+      try {
+        const {
+          firstname,
+          lastname,
+          email,
+          password,
+          company_name,
+          country_code,
+          number,
+          alt_country_code,
+          alt_number,
+          country,
+          state,
+          city,
+          zipcode,
+          address1,
+          address2,
+          ult_parent_id,
+          status,
+          client_upstatus,
+          dob,
+          no_of_calls,
+          callback,
+          gender,
+          parent_id,
+          title,
+          description,
+          experience,
+          T_Projects,
+          S_Client_satisfaction,
+        } = userInput;
+
+        const errors = {};
+
+        // ✅ validations (same as your existing)
+        if (!firstname || firstname.trim() === "") {
+          errors.firstname = "First name is required.";
+        }
+        if (!email || email.trim() === "") {
+          errors.email = "Email is required.";
+        }
+
+        const existingUser = await Users.findOne({ where: { email } });
+        if (existingUser) {
+          errors.email = "Email is already in use.";
+        }
+
+        if (Object.keys(errors).length > 0) {
+          const firstField = Object.keys(errors)[0];
+          throw new UserInputError(errors[firstField], { field: firstField });
+        }
+
+        // ✅ hash password
+        let hashedPassword = null;
+        if (password) {
+          const saltRounds = 10;
+          hashedPassword = await bcrypt.hash(password, saltRounds);
+        }
+
+        // 🔥 FORCE ROLE = 4 HERE
+        const newUser = await Users.create({
+          firstname,
+          lastname,
+          email,
+          password: hashedPassword,
+          role: 4, // ✅ ALWAYS CLIENT
+          company_name,
+          country_code,
+          number,
+          alt_country_code,
+          alt_number,
+          country,
+          state,
+          city,
+          zipcode,
+          address1,
+          address2,
+          ult_parent_id: ult_parent_id === "0" ? null : ult_parent_id,
+          parent_id: parent_id === "0" ? null : parent_id,
+          status,
+          client_upstatus,
+          dob,
+          callback,
+          no_of_calls,
+          gender,
+          title,
+          description,
+          experience,
+          T_Projects,
+          S_Client_satisfaction,
+        });
+
+        return {
+          ...newUser.dataValues,
+        };
+      } catch (error) {
+        console.error("Error creating client user:", error);
+        if (error instanceof UserInputError) {
+          throw error;
+        }
+        throw new Error(error.message || "Failed to create client user.");
+      }
+    },
   },
 };
 

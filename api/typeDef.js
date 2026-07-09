@@ -230,6 +230,44 @@ export default gql`
     avatar: String
   }
 
+  input CreateClientUserInput {
+  firstname: String!
+  lastname: String
+  email: String!
+  password: String
+
+  company_name: String
+  country_code: String
+  number: String
+  alt_country_code: String
+  alt_number: String
+
+  country: String
+  state: String
+  city: String
+  zipcode: String
+
+  address1: String
+  address2: String
+
+  ult_parent_id: ID
+  parent_id: ID
+
+  status: Int
+  client_upstatus: Int
+
+  dob: String
+  callback: String
+  no_of_calls: Int
+  gender: String
+
+  title: String
+  description: String
+  experience: String
+  T_Projects: String
+  S_Client_satisfaction: String
+}
+
   type EditUserProfilePayload {
     user: User!
   }
@@ -327,5 +365,7 @@ input UpdateProjectInput {
     ): EditUserProjectPayload!
     editUserProfile(input: EditUserProfileInput!): EditUserProfilePayload!
     updateUserAvatar(avatar: String!): UserResponse
+    createClientUser(userInput: CreateClientUserInput!): User
+
   }
 `;
